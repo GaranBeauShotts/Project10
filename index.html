@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Set Theory Operations</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f2f5;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Set Theory Operations</h1>
+
+  <div>
+    <button onclick="showUnion()">A ∪ B</button>
+    <button onclick="showIntersection()">A ∩ C</button>
+    <button onclick="showDifference()">A - B</button>
+    <button onclick="showComplement()">Complement of A</button>
+    <button onclick="showPowerSet()">Power Set of A</button>
+  </div>
+
+  <h2>Output:</h2>
+  <pre id="output">Click a button to perform a set operation.</pre>
+
+  <script>
+    class SetClass {
+      constructor(elements) {
+        this.elements = new Set(elements);
+      }
+
+      union(otherSet) {
+        return new SetClass([...this.elements, ...otherSet.elements]);
+      }
+
+      intersection(otherSet) {
+        return new SetClass([...this.elements].filter(el => otherSet.elements.has(el)));
+      }
+
+      difference(otherSet) {
+        return new SetClass([...this.elements].filter(el => !otherSet.elements.has(el)));
+      }
+
+      complement(universalSet) {
+        return new SetClass([...universalSet.elements].filter(el => !this.elements.has(el)));
+      }
+
+      powerSet() {
+        const arr = [...this.elements];
+        const result = [];
+        const total = 1 << arr.length;
+        for (let i = 0; i < total; i++) {
+          const subset = [];
+          for (let j = 0; j < arr.length; j++) {
+            if (i & (1 << j)) {
+              subset.push(arr[j]);
+            }
+          }
+          result.push(subset);
+        }
+        return result;
+      }
+
+      toString() {
+        return `{${[...this.elements].join(", ")}}`;
+      }
+    }
+
+    // Sets
+    const U = new SetClass(["Alice", "Bob", "Charlie", "David", "Eva", "Fiona", "George"]);
+    const A = new SetClass(["Alice", "Bob", "Charlie"]);
+    const B = new SetClass(["Bob", "David", "Eva"]);
+    const C = new SetClass(["Alice", "Eva", "George"]);
+
+    function showUnion() {
+      const result = A.union(B);
+      document.getElementById("output").textContent = `A ∪ B: ${result.toString()}`;
+    }
+
+    function showIntersection() {
+      const result = A.intersection(C);
+      document.getElementById("output").textContent = `A ∩ C: ${result.toString()}`;
+    }
+
+    function showDifference() {
+      const result = A.difference(B);
+      document.getElementById("output").textContent = `A - B: ${result.toString()}`;
+    }
+
+    function showComplement() {
+      const result = A.complement(U);
+      document.getElementById("output").textContent = `Complement of A: ${result.toString()}`;
+    }
+
+    function showPowerSet() {
+      const powerSet = A.powerSet();
+      let text = `Power Set of A (${A.toString()}):\n\n`;
+      powerSet.forEach((subset, index) => {
+        text += `${index + 1}: {${subset.join(", ")}}\n`;
+      });
+      document.getElementById("output").textContent = text;
+    }
+  </script>
+</body>
+</html>
